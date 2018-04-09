@@ -13,12 +13,12 @@
         <div class="email">
           <input type="text" class="inputs" v-model="email" placeholder="邮箱">
         </div>
-        <div class="bottonsl">
+        <div class="bottonsl" @click="joinin()">
           提交注册
         </div>
         <div class="bottoms">
-          <div class="goback">返回主页&nbsp;&nbsp;&nbsp;&nbsp;|</div>
-          <div class="loginin">&nbsp;&nbsp;&nbsp;&nbsp;已有账号?</div>
+          <div class="goback" @click="gozhuye()">返回主页&nbsp;&nbsp;&nbsp;&nbsp;|</div>
+          <div class="loginin" >&nbsp;&nbsp;&nbsp;&nbsp;已有账号?</div>
         </div>
       </div>
     </div>
@@ -84,7 +84,22 @@ export default {
       var url = 'http://47.97.99.132:3000/joinin'
       axios.post(url, qs.stringify({username: that.username, userpasswd: that.userpasswd, usermail: that.email, gendatetime: datetime})).then(function (data) {
         console.log(data)
+        if (data.data.success === true) {
+          alert('注册成功')
+          that.username = ''
+          that.userpasswd = ''
+          that.email = ''
+          that.$router.replace('/')
+        } else {
+          alert(data.data.msg)
+          that.username = ''
+          that.userpasswd = ''
+          that.email = ''
+        }
       })
+    },
+    gozhuye () {
+      this.$router.replace('/')
     }
   }
 }
@@ -177,7 +192,11 @@ a {
     float:left;
   }
 .goback{
+   text-align: right;
+ }
+.goback:active{
   text-align: right;
+  color:#42b983;
 }
 .loginin{
   text-align: left;
