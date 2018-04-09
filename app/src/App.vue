@@ -1,6 +1,11 @@
 <template>
   <div id="app">
     <transition  name="custom-classes-transition"
+                 enter-active-class="animated slideInUp"
+                 leave-active-class="animated slideOutDown">
+      <router-view class="child-view"/>
+    </transition>
+    <transition  name="custom-classes-transition"
                  enter-active-class="animated slideInDown"
                  leave-active-class="animated slideOutUp">
       <tqview @close='close()' v-if='istqshow' class="tqview"></tqview>
@@ -76,7 +81,9 @@ export default {
         }
       }
     },
-    gof1 () {},
+    gof1 () {
+      this.$router.push('/todo')
+    },
     gof2 () {},
     gof3 () {},
     gof4 () {
@@ -125,6 +132,17 @@ body, html{
   background-color: #fff;
   height:100%;
   /* -webkit-touch-callout: none; */
+}
+
+.child-view{
+  height:100%;
+  width:100%;
+  position:absolute;
+  top:0px;
+  left:0px;
+  z-index:21;
+  overflow:scroll;
+  background-color:#fff;
 }
 
 .tqview{
