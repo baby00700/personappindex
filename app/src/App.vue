@@ -23,19 +23,16 @@
 </template>
 
 <script>
-import axios from 'axios'
+// import axios from 'axios'
 import tq from '@/components/tq'
-const qs = require('qs')
+// const qs = require('qs')
 export default {
   name: 'App',
   data () {
     return {
       msg: 122,
       deg: 0,
-      istqshow: true,
-      username: '123',
-      userpasswd: '123456',
-      email: '123@qq.com'
+      istqshow: true
     }
   },
   mounted () {
@@ -87,18 +84,7 @@ export default {
     gof2 () {},
     gof3 () {},
     gof4 () {
-      var that = this
-      var year = new Date().getFullYear()
-      var month = new Date().getMonth() + 1
-      var date = new Date().getDate()
-      var hour = new Date().getHours()
-      var minutes = new Date().getMinutes()
-      var sec = new Date().getSeconds()
-      var datetime = year + '-' + month + '-' + date + ' ' + hour + ':' + minutes + ':' + sec
-      var url = 'http://47.97.99.132:3000/joinin'
-      axios.post(url, qs.stringify({username: that.username, userpasswd: that.userpasswd, usermail: that.email, gendatetime: datetime})).then(function (data) {
-        console.log(data)
-      })
+      this.$router.push('/joinin')
     }
   },
   components: {
