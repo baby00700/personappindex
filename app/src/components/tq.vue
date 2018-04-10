@@ -15,6 +15,7 @@
 
 <script>
 import axios from 'axios'
+const config = require('../vueconfig.js')
 export default {
   name: 'tianqi',
   data () {
@@ -53,7 +54,7 @@ export default {
   methods: {
     gettq () {
       var that = this
-      var url = 'http://47.97.99.132:3000/tq'
+      var url = config.hostname + 'tq'
       axios.post(url).then(function (data) {
         console.log(data)
         var datainfo = data.data.HeWeather6

@@ -27,6 +27,7 @@
 
 <script>
 import axios from 'axios'
+const config = require('../vueconfig.js')
 const qs = require('qs')
 export default {
   name: 'joinin',
@@ -81,7 +82,7 @@ export default {
       var minutes = new Date().getMinutes()
       var sec = new Date().getSeconds()
       var datetime = year + '-' + month + '-' + date + ' ' + hour + ':' + minutes + ':' + sec
-      var url = 'http://47.97.99.132:3000/joinin'
+      var url = config.hostname + 'joinin'
       axios.post(url, qs.stringify({username: that.username, userpasswd: that.userpasswd, usermail: that.email, gendatetime: datetime})).then(function (data) {
         console.log(data)
         if (data.data.success === true) {
