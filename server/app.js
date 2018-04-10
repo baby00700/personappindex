@@ -105,5 +105,5 @@ app.post('/loginin', function (req, res) {
  var server = app.listen(3000, function () {
      var host = server.address().address
      var port = server.address().port
-     console.log(host, port)
+     console.log('App is running @ http://127.0.0.1:' + port)
  })
