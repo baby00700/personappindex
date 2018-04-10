@@ -18,7 +18,7 @@
         </div>
         <div class="bottoms">
           <div class="goback" @click="gozhuye()">返回主页&nbsp;&nbsp;&nbsp;&nbsp;|</div>
-          <div class="loginin" >&nbsp;&nbsp;&nbsp;&nbsp;已有账号?</div>
+          <div class="loginin" @click="gologin()">&nbsp;&nbsp;&nbsp;&nbsp;已有账号?</div>
         </div>
       </div>
     </div>
@@ -29,6 +29,7 @@
 import axios from 'axios'
 const config = require('../vueconfig.js')
 const qs = require('qs')
+axios.defaults.withCredentials = true
 export default {
   name: 'joinin',
   data () {
@@ -101,6 +102,9 @@ export default {
     },
     gozhuye () {
       this.$router.replace('/')
+    },
+    gologin () {
+      this.$router.replace('/loginin')
     }
   }
 }

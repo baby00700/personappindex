@@ -16,6 +16,7 @@
 <script>
 import axios from 'axios'
 const config = require('../vueconfig.js')
+axios.defaults.withCredentials = true
 export default {
   name: 'tianqi',
   data () {

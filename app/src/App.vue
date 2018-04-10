@@ -84,7 +84,7 @@ export default {
     gof2 () {},
     gof3 () {},
     gof4 () {
-      this.$router.push('/joinin')
+      this.$router.push('/loginin')
     }
   },
   components: {
