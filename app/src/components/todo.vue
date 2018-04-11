@@ -144,6 +144,7 @@ export default {
             additemele.style.height = '44px'
             // animate end
             that.textvalue = ''
+            that.gettodo()
           } else {
             alert(data.data.msg)
             console.log(data.data.obj)
