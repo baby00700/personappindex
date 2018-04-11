@@ -159,12 +159,12 @@ export default {
       var url = config.hostname + 'gettodo'
       axios.post(url).then(function (data) {
         if (data.data.obj === 'needlogin') {
-          alert(data.data.msg)
           that.istipshow = true
         } else {
           that.istipshow = false
           if (data.data.success === true) {
             console.log(data.data.obj)
+            that.todolist = []
             if (data.data.obj.length === 0) {
               that.todolist.push({updatetime: '通知', todo: '暂无数据！', iscomplete: '1', isdelete: '1'})
             } else {
