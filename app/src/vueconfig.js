@@ -1,4 +1,4 @@
 const config = {
-  hostname: 'http://127.0.0.1:3000/'
+  hostname: 'http://192.168.1.167:3000/'
 }
 module.exports = config

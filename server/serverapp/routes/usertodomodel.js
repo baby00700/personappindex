@@ -1,21 +1,21 @@
 const Sequelize = require('sequelize');
 const seq = require('./sql')
 
-const userinfo = seq.define('userinfo', {
+const todos = seq.define('todolist', {
      username: {
       type: Sequelize.STRING
      },
-     userpsd: {
+     todo: {
+        type: Sequelize.TEXT
+     },
+     updatetime: {
         type: Sequelize.STRING
      },
-     useremail: {
-        type: Sequelize.STRING
-     },
-     regtime: {
-        type: Sequelize.STRING
-     },
-    luckyname: {
-        type: Sequelize.STRING
+    iscomplete: {
+        type: Sequelize.INTEGER
+    },
+    isdelete: {
+        type: Sequelize.INTEGER
     }
   },{
     'timestamps': false,  
@@ -26,4 +26,4 @@ const userinfo = seq.define('userinfo', {
   })
 
 
-  module.exports = userinfo
+  module.exports = todos

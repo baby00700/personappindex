@@ -4,6 +4,7 @@ const https = require('https')
 const Sequelize = require('sequelize');
 const excelcon = require('./excelmodel')
 const userinfo = require('./usermodel')
+const todos = require('./usertodomodel')
 const Op = Sequelize.Op;
 var identityKey = 'skey';
 
@@ -14,7 +15,7 @@ router.get('/', function(req, res, next) {
 });
 
 router.all('*', function(req, res, next) {
-    res.header("Access-Control-Allow-Origin", "http://192.168.1.167:8081");
+    res.header("Access-Control-Allow-Origin", "http://192.168.1.167:8080");
     res.header("Access-Control-Allow-Headers", "X-Requested-With");
     res.header("Access-Control-Allow-Methods","PUT,POST,GET,DELETE,OPTIONS");
     res.header("Access-Control-Allow-Credentials","true");
@@ -109,9 +110,9 @@ router.post('/joinin', function (req, res) {
                     res.send({success: true,msg: '事务完成'});
                 })
                 .catch(error => {
-                console.log(error)
-            res.send({success: false,msg: '注册失败！'});
-        })
+                    console.log(error)
+                    res.send({success: false,msg: '注册失败！'});
+                })
         }
     })
 })
@@ -122,7 +123,7 @@ router.get('/tests', function (req, res) {
             res.send({success: false})
         }
         req.session.userid = '12312123'
-        res.send({success: true})
+        res.send({session: req.session})
     })
 })
 
@@ -132,12 +133,22 @@ router.get('/testse', function (req, res) {
 })
 
 
+router.get('/dtests', function (req, res) {
+    console.log(req.session)
+    req.session.destroy(function (err) {
+        res.send({success: false, msg: '登出失败！', obj: ''})
+    });
+    res.send(req.session)
+})
+
 router.post('/loginin', function (req, res) {
     console.log('req.body', req.body);
     if (req.body.username === '') {
         if (req.session.userid) {
-            res.send({success: true, msg: '', obj: ''})
+            console.log('nosession')
+            res.send({success: true, msg: '', obj: req.session})
         } else {
+            console.log('session')
             res.send({success: false, msg: '', obj: ''})
         }
     } else {
@@ -145,10 +156,8 @@ router.post('/loginin', function (req, res) {
             where: {
                 [Op.and]: [{username: req.body.username}, {userpsd: req.body.userpasswd}]
             }
-            // where: {username: req.body.username}
         }).then(function (data) {
             if (data.length > 0) {
-                console.log(req.session.userid)
                 req.session.regenerate(function (err) {
                     if(err){
                         res.send({success: false, msg: '登录失败!', obj: data})
@@ -161,9 +170,59 @@ router.post('/loginin', function (req, res) {
             } else {
                 res.send({success: false, msg: '请检查用户名或密码是否正确！', obj: data})
             }
+        }).catch(err => {
+            console.log(err)
         })
     }
 })
 
+router.post('/loginout', function (req, res) {
+    console.log('req.body', req.body);
+    if (req.session.userid) {
+        console.log(req.session)
+        req.session.destroy(function (err) {
+            res.send({success: false, msg: '登出失败！', obj: ''})
+        });
+        res.clearCookie(identityKey);
+        res.send({success: true, msg: '', obj: ''})
+    } else {
+        console.log('session')
+        res.send({success: false, msg: '', obj: ''})
+    }
+})
 
+router.post('/settodo', function (req, res) {
+    console.log('req.body', req.body);
+    if (req.session.userid) {
+        todos
+            .build({username: req.session.userid[0].username, todo: req.body.todo, updatetime: req.body.updatetime})
+            .save()
+            .then(function () {
+                res.send({success: true,msg: '事务完成'});
+            })
+            .catch(error => {
+                console.log(error)
+                res.send({success: false,msg: '添加失败'});
+            })
+    } else {
+        console.log('session')
+        res.send({success: false, msg: '请先登录', obj: 'needlogin'})
+    }
+})
+
+router.post('/gettodo', function (req, res) {
+    console.log('req.body', req.body);
+    if (req.session.userid) {
+        todos.findAll({
+            where: {username: req.session.userid[0].username}
+        }).then(function (data) {
+            res.send({success: true, msg: '获取成功', obj: data})
+        }).catch(err => {
+            res.send({success: false, msg: '失败', obj: ''})
+        })
+    } else {
+        console.log('session')
+        res.send({success: false, msg: '请先登录', obj: 'needlogin'})
+    }
+})
 module.exports = router;

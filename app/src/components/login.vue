@@ -2,11 +2,15 @@
   <div class="login" v-bind:style="{background:'-webkit-linear-gradient(' + deg + 'deg, #91486F, #75AFDD'}">
     <div class="wrap">
       <div class="top" id="top">
+        <transition  name="custom-classes-transition"
+                     mode="in-out"
+                     enter-active-class="animated fadeIn">
         <div class="userinfo" v-if="!isinputshow">
           <div class="ckusername">
-            {{username}}123456312
+            {{luckyname}}
           </div>
         </div>
+        </transition>
       </div>
       <div class="mid" id="mid">
         <div v-if="isinputshow">
@@ -25,8 +29,8 @@
           </div>
         </div>
         <div class="userinfo" v-if="!isinputshow">
-          <div class="bottonsl loginoutbotton">
-            注销
+          <div class="bottonsl loginoutbotton" @click="loginout()">
+            登出
           </div>
           <div class="bottonsl loginoutbotton" @click="gozhuye">
             返回主页
@@ -49,6 +53,7 @@ export default {
       msg: 'login',
       deg: 0,
       username: '',
+      luckyname: '',
       userpasswd: '',
       email: '',
       isinputshow: true
@@ -97,6 +102,7 @@ export default {
           that.username = ''
           that.userpasswd = ''
           that.email = ''
+          that.luckyname = data.data.obj[0].luckyname
           that.isinputshow = false
           var topele = document.getElementById('top')
           var midele = document.getElementById('mid')
@@ -107,18 +113,20 @@ export default {
           that.username = ''
           that.userpasswd = ''
           that.email = ''
+          that.luckyname = ''
         }
       })
     },
     checklogin () {
       var that = this
       var url = config.hostname + 'loginin'
-      axios.post(url, qs.stringify({username: that.username, userpasswd: that.userpasswd})).then(function (data) {
+      axios.post(url, qs.stringify({username: '', userpasswd: ''})).then(function (data) {
         console.log(data)
         if (data.data.success === true) {
           that.username = ''
           that.userpasswd = ''
           that.email = ''
+          that.luckyname = data.data.obj.userid[0].luckyname
           that.isinputshow = false
           var topele = document.getElementById('top')
           var midele = document.getElementById('mid')
@@ -137,6 +145,22 @@ export default {
     },
     gojoinin () {
       this.$router.replace('/joinin')
+    },
+    loginout () {
+      var that = this
+      var url = config.hostname + 'loginout'
+      axios.post(url).then(function (data) {
+        console.log(data)
+        if (data.data.success === true) {
+          that.isinputshow = true
+          var topele = document.getElementById('top')
+          var midele = document.getElementById('mid')
+          topele.style.height = '30%'
+          midele.style.height = '70%'
+        } else {
+          alert(data.data.msg)
+        }
+      })
     }
   }
 }
@@ -213,13 +237,13 @@ a {
 .bottonsl{
   width:80%;
   height:40px;
-  background-color:rgba(255,255,255,0.8);
+  background-color:rgba(255,255,255,0.5);
   margin-top:10px;
   margin-left:10%;
   border-radius:5px;
   overflow: hidden;
   font-size:14px;
-  color:#555;
+  color:#000;
   line-height:40px;
   -webkit-box-shadow: 0px 0px 10px 1px rgba(0,0,0,0.2);
 }
