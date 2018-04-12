@@ -1,53 +1,115 @@
 <template>
   <div id="app">
+    <mu-appbar title="Title">
+      <mu-icon-button icon="menu" slot="left" @click="showmenu()"/>
+      <mu-icon-button icon="help_outline" slot="right"/>
+    </mu-appbar>
     <transition  name="custom-classes-transition"
-                 enter-active-class="animated slideInUp"
-                 leave-active-class="animated slideOutDown">
-      <router-view class="child-view"/>
-    </transition>
-    <transition  name="custom-classes-transition"
-                 enter-active-class="animated slideInDown"
-                 leave-active-class="animated slideOutUp">
-      <tqview @close='close()' v-if='istqshow' class="tqview"></tqview>
-    </transition>
-    <div class="wrap" v-bind:style="{background:'-webkit-linear-gradient(' + deg + 'deg, #8915C0, #0195D1'}">
-      <div class="listwrap">
-        <div class="funs f1" @click="gof1()"></div>
-        <div class="funs f2" @click="gof2()"></div>
-        <div class="funs f3" @click="gof3()"></div>
-        <div class="funs f4" @click="gof4()"></div>
+                 enter-active-class="animated slideInLeft"
+                 leave-active-class="animated slideOutLeft">
+    <div class="menu" v-show="ismenushow">
+      <div class="menuleft">
+        <div class="menuleft-top">Login</div>
+        <div class="menuleft-mid">
+          <mobile-tear-sheet>
+            <mu-list>
+              <mu-list-item title="Home" @click="gohome()">
+              </mu-list-item>
+              <mu-list-item title="ToDos" @click="gotodos()">
+              </mu-list-item>
+              <mu-list-item title="Weather">
+              </mu-list-item>
+              <mu-list-item title="Others">
+              </mu-list-item>
+             <mu-list-item title="login" @click="gologin()">
+              </mu-list-item>
+            </mu-list>
+            <mu-divider />
+            <mu-list>
+              <mu-list-item title="About">
+              </mu-list-item>
+            </mu-list>
+          </mobile-tear-sheet>
+        </div>
       </div>
-      <div class="bottons" @click='goshouye()'>返回首页</div>
     </div>
+    </transition>
+    <transition  name="custom-classes-transition"
+                 enter-active-class="animated fadeIn"
+                 leave-active-class="animated fadeOut">
+      <div class="menuright" v-show="ismenushow" @click="hidemenu()">cc</div>
+    </transition>
+    <transition  name="custom-classes-transition"
+                              enter-active-class="animated slideInUp"
+                              leave-active-class="animated slideOutDown">
+    <router-view class="child-view"/>
+  </transition>
+    <!--<transition  name="custom-classes-transition"-->
+                 <!--enter-active-class="animated slideInDown"-->
+                 <!--leave-active-class="animated slideOutUp">-->
+      <!--<tqview @close='close()' v-if='istqshow' class="tqview"></tqview>-->
+    <!--</transition>-->
+    <!--<div class="wrap" v-bind:style="{background:'-webkit-linear-gradient(' + deg + 'deg, #8915C0, #0195D1'}">-->
+      <!--<div class="listwrap">-->
+        <!--<div class="funs f1" @click="gof1()"></div>-->
+        <!--<div class="funs f2" @click="gof2()"></div>-->
+        <!--<div class="funs f3" @click="gof3()"></div>-->
+        <!--<div class="funs f4" @click="gof4()"></div>-->
+      <!--</div>-->
+      <!--<div class="bottons" @click='goshouye()'>返回首页</div>-->
+    <!--</div>-->
+    <!---->
   </div>
 </template>
 
 <script>
-// import axios from 'axios'
+import axios from 'axios'
 import tq from '@/components/tq'
-// const qs = require('qs')
+const config = require('./vueconfig.js')
+const qs = require('qs')
+axios.defaults.withCredentials = true
 export default {
   name: 'App',
   data () {
     return {
       msg: 122,
       deg: 0,
-      istqshow: true
+      istqshow: true,
+      ismenushow: false
     }
   },
   mounted () {
-    console.log('tianqi mounted !')
-    this.setdeg()
+    this.checklogin()
     window.addEventListener('contextmenu', function (e) {
       e.preventDefault()
     })
   },
   methods: {
-    close () {
-      this.istqshow = false
+    checklogin () {
+      var that = this
+      var url = config.hostname + 'loginin'
+      axios.post(url, qs.stringify({username: '', userpasswd: ''})).then(function (data) {
+        console.log(data)
+        if (data.data.success === true) {
+          that.$router.replace('/')
+        } else {
+          that.$router.replace('/loginin')
+        }
+      })
     },
-    goshouye () {
-      this.istqshow = true
+    showmenu () {
+      this.ismenushow = true
+    },
+    hidemenu () {
+      this.ismenushow = false
+    },
+    gohome () {
+      this.$router.replace('/')
+      this.hidemenu()
+    },
+    gologin () {
+      this.$router.replace('/loginin')
+      this.hidemenu()
     },
     setdeg () {
       // console.log(this.deg)
@@ -78,8 +140,9 @@ export default {
         }
       }
     },
-    gof1 () {
+    gotodos () {
       this.$router.push('/todo')
+      this.ismenushow = false
     },
     gof2 () {},
     gof3 () {},
@@ -96,7 +159,7 @@ export default {
 <style >
   @import '../static/css/animate.css';
   *{
-    text-align: center;
+    /*text-align: center;*/
   }
 </style>
 
@@ -121,87 +184,54 @@ body, html{
 }
 
 .child-view{
-  height:100%;
+  height:calc(100% - 56px);
   width:100%;
-  position:absolute;
-  top:0px;
+  position:fixed;
+  top:56px;
   left:0px;
-  z-index:21;
-  overflow:scroll;
+  z-index:2;
+  overflow:hidden;
   background-color:#fff;
 }
 
-.tqview{
-   width:100%;
-   height:100%;
-   z-index:10;
-}
-.wrap{
-  width:100%;
+.menu{
+  width:55%;
   height:100%;
-  position: fixed;
+  overflow: hidden;
+  position:fixed;
   top:0px;
   left:0px;
+  z-index:100;
 }
-.bottons{
+.menuleft{
   width:100%;
-  height:50px;
-  background-color:rgba(255,255,255,0.3);
-  position: fixed;
-  bottom:0px;
-  left:0px;
-  z-index:8;
-  color:#fff;
-  font-size:14px;
-  line-height:50px;
-  text-shadow: 2px 2px 50px rgba(0,0,0,0.6);
-  -webkit-box-shadow:0px 1px 20px 1px rgba(0,0,0,0.3);
-}
-.listwrap{
-  width:100%;
-  height:calc(100% - 50px);
-  padding-bottom:50px;
+  height:100%;
+  background-color:#fff;
   position: absolute;
-  top:10px;
+  top:0px;
   left:0px;
+  -webkit-box-shadow: 0px 3px 20px 1px rgba(0,0,0,0.3);
+}
+.menuright{
+  width:100%;
+  height:100%;
+  background-color:rgba(0,0,0,0.4);
+  position: absolute;
+  top:0px;
+  left:0px;
+  z-index:9;
+}
+.menuleft-top{
+  width:100%;
+  height:56px;
+  background-color:#7E57C2;
+  color:#fff;
+  font-size:22px;
+  line-height: 56px;
+}
+.menuleft-mid{
+  width:100%;
+  height:calc(100% - 56px);
   overflow: scroll;
-}
-.funs{
-  width:41%;
-  margin-left:6%;
-  margin-top:20px;
-  height:100px;
-  border-radius:6px;
-  background-color:rgba(255,255,255,0.2);
-  float:left;
-  background-size:60px 60px;
-  background-repeat: no-repeat;
-  background-position: center;
-  -webkit-box-shadow:0px 0px 30px 1px rgba(0,0,0,0.4);
-}
-.funs:active{
-  width:41%;
-  margin-left:6%;
-  margin-top:20px;
-  height:100px;
-  border-radius:6px;
-  background-color:rgba(255,255,255,0.3);
-  float:left;
-  -webkit-box-shadow:0px 0px 10px 1px rgba(0,0,0,0.5);
-}
-.f1{
-  background-image: url(./assets/img/daiban.png);
-}
-
-.f2{
-  background-image: url(./assets/img/tixing.png);
-}
-
-.f3{
-  background-image: url(./assets/img/chaxun.png);
-}
-
-.f4{
-  background-image: url(./assets/img/weizhi.png);
 }
 </style>

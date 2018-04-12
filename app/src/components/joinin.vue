@@ -1,27 +1,30 @@
 <template>
-  <div class="joinin" v-bind:style="{background:'-webkit-linear-gradient(' + deg + 'deg, #91486F, #75AFDD'}">
+  <div class="joinin">
     <div class="wrap">
       <div class="top">
       </div>
       <div class="mid">
         <div class="username">
-          <input type="text" class="inputs" v-model="username" placeholder="用户名">
+          <mu-text-field hintText="用户名" fullWidth v-model="username"/>
         </div>
         <div class="passwd">
-          <input type="text" class="inputs" v-model="userpasswd" placeholder="密码">
+          <mu-text-field hintText="密码" fullWidth v-model="userpasswd"/>
         </div>
         <div class="email">
-          <input type="text" class="inputs" v-model="email" placeholder="邮箱">
+          <mu-text-field hintText="邮箱" fullWidth v-model="email"/>
         </div>
-        <div class="bottonsl" @click="joinin()">
-          提交注册
-        </div>
-        <div class="bottoms">
-          <div class="goback" @click="gozhuye()">返回主页&nbsp;&nbsp;&nbsp;&nbsp;|</div>
-          <div class="loginin" @click="gologin()">&nbsp;&nbsp;&nbsp;&nbsp;已有账号?</div>
+        <div class="loginsub">
+          <div class="loginbottons">
+            <mu-flat-button label="已有账号" class="loginbottonc" primary @click="gologin()"/>
+            <mu-raised-button label="注册" class="loginbottonl"  primary @click="joinin()"/>
+          </div>
         </div>
       </div>
     </div>
+    <mu-dialog :open="dialog" title="">
+      {{msg}}
+      <mu-flat-button label="确定" slot="actions" primary @click="close"/>
+    </mu-dialog>
   </div>
 </template>
 
@@ -38,42 +41,13 @@ export default {
       deg: 0,
       username: '',
       userpasswd: '',
-      email: ''
+      email: '',
+      dialog: false
     }
   },
   mounted () {
-    this.setdeg()
   },
   methods: {
-    setdeg () {
-      // console.log(this.deg)
-      var that = this
-      if (this.deg === 0) {
-        this.route = 1
-        that.deg++
-        that.setdeg()
-      } else if (this.deg > 0 && this.deg <= 360) {
-        if (this.route === 1) {
-          setTimeout(function () {
-            that.deg++
-            that.setdeg()
-          }, 20)
-        } else {
-          setTimeout(function () {
-            that.deg--
-            that.setdeg()
-          }, 20)
-        }
-      } else if (this.deg >= 360) {
-        this.route = 2
-        if (this.route === 2) {
-          setTimeout(function () {
-            that.deg--
-            that.setdeg()
-          }, 20)
-        }
-      }
-    },
     joinin () {
       var that = this
       var year = new Date().getFullYear()
@@ -87,13 +61,16 @@ export default {
       axios.post(url, qs.stringify({username: that.username, userpasswd: that.userpasswd, usermail: that.email, gendatetime: datetime})).then(function (data) {
         console.log(data)
         if (data.data.success === true) {
+          that.msg = '注册成功'
           alert('注册成功')
+          that.dialog = true
           that.username = ''
           that.userpasswd = ''
           that.email = ''
           that.$router.replace('/')
         } else {
-          alert(data.data.msg)
+          that.msg = data.data.msg
+          that.dialog = true
           that.username = ''
           that.userpasswd = ''
           that.email = ''
@@ -105,6 +82,9 @@ export default {
     },
     gologin () {
       this.$router.replace('/loginin')
+    },
+    close () {
+      this.dialog = false
     }
   }
 }
@@ -146,64 +126,32 @@ a {
     height:70%;
     position:absolute;
     bottom:0px;
+    /*background-color:red;*/
   }
   .username, .passwd, .email{
     width:80%;
-    height:40px;
-    background-color:rgba(255,255,255,0.5);
-    margin-top:10px;
     margin-left:10%;
-    border-radius:5px;
-    overflow: hidden;
-    -webkit-box-shadow: 0px 0px 10px 1px rgba(0,0,0,0.2);
-  }
-  .inputs{
-    width:100%;
-    height:100%;
-    border:0;
-    background-color:rgba(0,0,0,0);
-  }
-.bottonsl{
-  width:80%;
-  height:40px;
-  background-color:rgba(255,255,255,0.8);
-  margin-top:10px;
-  margin-left:10%;
-  border-radius:5px;
-  overflow: hidden;
-  font-size:14px;
-  color:#555;
-  line-height:40px;
-  -webkit-box-shadow: 0px 0px 10px 1px rgba(0,0,0,0.2);
-}
-  .bottonsl:active{
-    -webkit-box-shadow: 0px 0px 8px 1px rgba(0,0,0,0.3);
-    background-color:rgba(255,255,255,1);
+    text-align: left;
+    /*background-color:green;*/
   }
 
-  .bottoms{
-    width:100%;
-    height:40px;
-    text-shadow: 2px 2px 6px rgba(0,0,0,0.3);
-    margin-top:30px;
-    font-size:14px;
-    line-height:40px;
-    color:#eee;
-    /*background-color:rgba(255,255,255,1);*/
-  }
-  .goback, .loginin{
-    width:50%;
-    height:40px;
-    float:left;
-  }
-.goback{
-   text-align: right;
- }
-.goback:active{
-  text-align: right;
-  color:#42b983;
+.loginsub{
+  width:80%;
+  /*text-align: left;*/
+  margin-left:10%;
+  margin-top:15px;
 }
-.loginin{
-  text-align: left;
+.loginbottons{
+  width:256px;
+  height:36px;
+  /*background-color:red;*/
+  margin-left: calc(50% - 128px);
 }
+.loginbottonc{
+  float: left;
+}
+.loginbottonl{
+  float: right;
+}
+
 </style>

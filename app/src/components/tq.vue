@@ -17,6 +17,7 @@
 import axios from 'axios'
 const config = require('../vueconfig.js')
 axios.defaults.withCredentials = true
+const qs = require('qs')
 export default {
   name: 'tianqi',
   data () {
@@ -41,6 +42,7 @@ export default {
   },
   mounted () {
     console.log('tq mounted!')
+    this.checklogin()
     this.setdeg()
     this.gettq()
     // console.clear()
@@ -53,6 +55,18 @@ export default {
     bottomelement.addEventListener('touchcancel', this.touchcancel, false)
   },
   methods: {
+    checklogin () {
+      var that = this
+      var url = config.hostname + 'loginin'
+      axios.post(url, qs.stringify({username: '', userpasswd: ''})).then(function (data) {
+        console.log(data)
+        if (data.data.success === true) {
+          that.$router.replace('/')
+        } else {
+          that.$router.replace('/loginin')
+        }
+      })
+    },
     gettq () {
       var that = this
       var url = config.hostname + 'tq'

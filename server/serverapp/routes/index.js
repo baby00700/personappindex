@@ -15,7 +15,7 @@ router.get('/', function(req, res, next) {
 });
 
 router.all('*', function(req, res, next) {
-    res.header("Access-Control-Allow-Origin", "http://192.168.1.167:8080");
+    res.header("Access-Control-Allow-Origin", "http://192.168.1.167:8081");
     res.header("Access-Control-Allow-Headers", "X-Requested-With");
     res.header("Access-Control-Allow-Methods","PUT,POST,GET,DELETE,OPTIONS");
     res.header("Access-Control-Allow-Credentials","true");
@@ -214,12 +214,46 @@ router.post('/gettodo', function (req, res) {
     console.log('req.body', req.body);
     if (req.session.userid) {
         todos.findAll({
+            order: [['id', 'DESC']],
             where: {username: req.session.userid[0].username}
         }).then(function (data) {
             res.send({success: true, msg: '获取成功', obj: data})
         }).catch(err => {
-            res.send({success: false, msg: '失败', obj: ''})
+            res.send({success: false, msg: '失败', obj: '', err: err})
         })
+    } else {
+        console.log('session')
+        res.send({success: false, msg: '请先登录', obj: 'needlogin'})
+    }
+})
+
+
+router.post('/setdone', function (req, res) {
+    console.log('req.body', req.body);
+    if (req.session.userid) {
+        todos.update(
+            {iscomplete: 1},
+            {where: {id: req.body.id}}).then(function (data) {
+            res.send({success: true, msg: '設置成功', obj: data})
+        }).catch(err => {
+            res.send({success: false, msg: '失败', obj: ''})
+    })
+    } else {
+        console.log('session')
+        res.send({success: false, msg: '请先登录', obj: 'needlogin'})
+    }
+})
+
+router.post('/setdel', function (req, res) {
+    console.log('req.body', req.body);
+    if (req.session.userid) {
+        todos.update(
+            {isdelete: 1},
+            {where: {id: req.body.id}}).then(function (data) {
+            res.send({success: true, msg: '設置成功', obj: data})
+        }).catch(err => {
+            res.send({success: false, msg: '失败', obj: ''})
+    })
     } else {
         console.log('session')
         res.send({success: false, msg: '请先登录', obj: 'needlogin'})

@@ -12,6 +12,8 @@
   },
   "dependencies": {
     "axios": "^0.18.0",
+    "mdui": "^0.4.1",
+    "muse-ui": "^2.1.0",
     "vue": "^2.5.2",
     "vue-router": "^3.0.1"
   },
