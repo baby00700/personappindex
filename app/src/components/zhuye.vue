@@ -41,7 +41,7 @@ export default {
     }
   },
   mounted () {
-    console.log('tq mounted!')
+    this.$emit('setchilddata', 'HOME')
     this.checklogin()
     this.setdeg()
     this.gettq()

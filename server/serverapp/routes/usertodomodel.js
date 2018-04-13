@@ -16,6 +16,9 @@ const todos = seq.define('todolist', {
     },
     isdelete: {
         type: Sequelize.INTEGER
+    },
+    jb: {
+        type: Sequelize.INTEGER
     }
   },{
     'timestamps': false,  

@@ -1,4 +1,4 @@
 const config = {
-  hostname: 'http://www.goodhao.top/'
+    "token": "wechat"
 }
 module.exports = config

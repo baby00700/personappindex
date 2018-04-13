@@ -5,13 +5,13 @@
       </div>
       <div class="mid">
         <div class="username">
-          <mu-text-field hintText="用户名" fullWidth v-model="username"/>
+          <mu-text-field hintText="用户名" class="tef"  v-model="username"/>
         </div>
         <div class="passwd">
-          <mu-text-field hintText="密码" fullWidth v-model="userpasswd"/>
+          <mu-text-field hintText="密码" class="tef"  v-model="userpasswd"/>
         </div>
         <div class="email">
-          <mu-text-field hintText="邮箱" fullWidth v-model="email"/>
+          <mu-text-field hintText="邮箱" class="tef"  v-model="email"/>
         </div>
         <div class="loginsub">
           <div class="loginbottons">
@@ -153,5 +153,10 @@ a {
 .loginbottonl{
   float: right;
 }
+  .tef{
+    width:256px;
+    height:32px;
+    margin-left:calc(50% - 128px);
+  }
 
 </style>

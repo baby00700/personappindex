@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <mu-appbar title="Title">
+    <mu-appbar :title="title">
       <mu-icon-button icon="menu" slot="left" @click="showmenu()"/>
       <mu-icon-button icon="help_outline" slot="right"/>
     </mu-appbar>
@@ -11,7 +11,6 @@
       <div class="menuleft">
         <div class="menuleft-top">Login</div>
         <div class="menuleft-mid">
-          <mobile-tear-sheet>
             <mu-list>
               <mu-list-item title="Home" @click="gohome()">
               </mu-list-item>
@@ -29,7 +28,6 @@
               <mu-list-item title="About">
               </mu-list-item>
             </mu-list>
-          </mobile-tear-sheet>
         </div>
       </div>
     </div>
@@ -42,29 +40,14 @@
     <transition  name="custom-classes-transition"
                               enter-active-class="animated slideInUp"
                               leave-active-class="animated slideOutDown">
-    <router-view class="child-view"/>
+    <router-view @setchilddata="settop" class="child-view"/>
   </transition>
-    <!--<transition  name="custom-classes-transition"-->
-                 <!--enter-active-class="animated slideInDown"-->
-                 <!--leave-active-class="animated slideOutUp">-->
-      <!--<tqview @close='close()' v-if='istqshow' class="tqview"></tqview>-->
-    <!--</transition>-->
-    <!--<div class="wrap" v-bind:style="{background:'-webkit-linear-gradient(' + deg + 'deg, #8915C0, #0195D1'}">-->
-      <!--<div class="listwrap">-->
-        <!--<div class="funs f1" @click="gof1()"></div>-->
-        <!--<div class="funs f2" @click="gof2()"></div>-->
-        <!--<div class="funs f3" @click="gof3()"></div>-->
-        <!--<div class="funs f4" @click="gof4()"></div>-->
-      <!--</div>-->
-      <!--<div class="bottons" @click='goshouye()'>返回首页</div>-->
-    <!--</div>-->
-    <!---->
   </div>
 </template>
 
 <script>
 import axios from 'axios'
-import tq from '@/components/tq'
+import tq from '@/components/zhuye'
 const config = require('./vueconfig.js')
 const qs = require('qs')
 axios.defaults.withCredentials = true
@@ -75,7 +58,8 @@ export default {
       msg: 122,
       deg: 0,
       istqshow: true,
-      ismenushow: false
+      ismenushow: false,
+      title: ''
     }
   },
   mounted () {
@@ -85,6 +69,9 @@ export default {
     })
   },
   methods: {
+    settop (value) {
+      this.title = value
+    },
     checklogin () {
       var that = this
       var url = config.hostname + 'loginin'
@@ -104,7 +91,7 @@ export default {
       this.ismenushow = false
     },
     gohome () {
-      this.$router.replace('/')
+      this.$router.replace('/zhuye')
       this.hidemenu()
     },
     gologin () {
